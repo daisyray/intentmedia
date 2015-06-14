@@ -1,0 +1,132 @@
+-------------------- Issue 1 ----------------------------
+Title:       Name Field accepts infinite number of chars
+Description: The Name Input box should constrain it's inputs to certain number of characters. Currently, it
+             takes any number of characters as input. Ideally, it should limit the char count to the
+             width of the corresponding column in database table.
+Steps:       1. After login, goto http://intent-pizza.internal.intentmedia.net:8080/pizzas/new
+             2. Click into the Name input box.
+             3. Enter 'x' hundred times.
+             4. It should not accept more than 30 (or 40) characters
+Priority:    1
+
+-------------------- Issue 2 ----------------------------
+Title:       Name field accepts arbitrary characters
+Description: The Name input box currently accepts any character. It should be limit it's input to possibly
+             alphabetical characters (a-z and A-Z).
+Steps:       1. After login, goto http://intent-pizza.internal.intentmedia.net:8080/pizzas/new
+             2. Click into the Name input box.
+             3. Enter '^^^^^'
+             4. Anything other than a thru z and A thru Z and 0 thru 9 should be allowed in this field
+Priority:    2
+
+-------------------- Issue 3 ----------------------------
+Title:       Size field accepts Infinite number of chars
+Description: The Size Input box should constrain it's inputs to certain number of characters. Currently, it
+             takes any number of characters as input. Ideally, it should limit the char count to the
+             width of the corresponding column in database table.
+Steps:       1. After login, goto http://intent-pizza.internal.intentmedia.net:8080/pizzas/new
+             2. Click into the Size input box.
+             3. Enter 'x' hundred times.
+             4. It should not accept more than 30 (or 40) characters
+Priority:    1
+
+-------------------- Issue 4 ----------------------------
+Title:       Size field accepts arbitrary characters
+Description: The Size input box currently accepts any character. It should be limit it's input to possibly
+             alphanumeric characters (a-z and A-Z and 0-9). 
+Steps:       1. After login, goto http://intent-pizza.internal.intentmedia.net:8080/pizzas/new
+             2. Click into the Size input box.
+             3. Enter '^^^^^'
+             4. Anything other than a thru z and A thru Z and 0 thru 9 should be allowed in this field
+Priority:    2
+
+-------------------- Issue 5 ----------------------------
+Title:       Name field should be Mandatory
+Description: System currenty allows the name input box to remain empty while clicking on 'Create' button. Expected
+             behavior is to get an error messsage if Name input box is left empty and 'Create' button is clicked.
+             Also, it should not navigate to next page if Name Input box is empty.
+Steps:       1. After login, goto http://intent-pizza.internal.intentmedia.net:8080/pizzas/new
+             2. Do not enter anything in Name Field
+             3. Enter 'large' into Size Field
+             4. Click on 'Create' button
+             5. Create should display an error. Instead it takes you to next screen.
+Priority:    1
+
+-------------------- Issue 6 ----------------------------
+Title:       Size field should be Mandatory
+Description: System currenty allows the Size input box to remain empty while clicking on 'Create' button. Expected
+             behavior is to get an error messsage if Size input box is left empty and 'Create' button is clicked.
+             Also, it should not navigate to next page if Size Input box is empty.
+Steps:       1. After login, goto http://intent-pizza.internal.intentmedia.net:8080/pizzas/new
+             2. Enter 'Cheese' into Name Field
+             3. Do not enter anything in Size Field
+             4. Click on 'Create' button
+             5. Create should display an error. Instead it takes you to next screen.
+Priority:    1
+
+-------------------- Issue 7 ----------------------------
+Title:       Number of orders should be restricted
+Description: Currently, the system allows you to create as many Orders as possible. It makes sense to restrict the
+             number of open Orders. 
+             If an user tries to create more than a predefined number of orders, System should display an error and possibly
+             disable the entire entry Form and present a link to take them to the List of Orders where user can delete
+             an Order.
+Steps:       1. After login, goto http://intent-pizza.internal.intentmedia.net:8080/pizzas/new
+             2. Enter 'Cheese' into Name Field
+             3. Enter 'large' into Size Field
+             4. Click on Create. It takes you to confirmation screen
+             5. Go back to http://intent-pizza.internal.intentmedia.net:8080/pizzas/new
+             6. Repeat steps 2 thru 5
+             7. Do this 40 times
+             8. One user should have some reasonable limit on New pizza orders. It should not be allowed after the limit is hit unless
+                old orders have been fulfilled or removed.
+Priority:    2
+
+-------------------- Issue 8 ----------------------------
+Title:       Going to New Pizza screen without login leads to 500 error
+Description: If an user is not logged in and if (s)he tries to goto New Pizza entry screen, it shows an error. Instead, it
+             should take the user to the Login screen
+Steps        1. Make sure you're not logged into the site. In Firefox or Chrome, you can do this by removing all cookies
+                from intentmedia.net
+             2. Type following in the Location : http://intent-pizza.internal.intentmedia.net:8080/pizzas/new
+             3. It shows an error : "We're sorry, but something went wrong."
+             4. Desired behavior is to redirect the user to the login screen: http://intent-pizza.internal.intentmedia.net:8080/
+Priority:    2
+
+-------------------- Issue 9 ----------------------------
+Title:       An user can see other users' order
+Description: A logged in user can change ID in the address bar and see other user's order details.
+Steps:       1. Create two new users (with emails a@test.com and b@test.com)
+             2. Login as a@test.com
+             3. Goto http://intent-pizza.internal.intentmedia.net:8080/pizzas/new
+             4. Enter a-cheese for Name
+             5. Enter a-large for Size
+             6. Click on 'Create'
+             7. It takes to another screen with following in the address bar: http://intent-pizza.internal.intentmedia.net:8080/pizzas/XXXX where XXXX is
+                a number. Make a note of this number (For example it might be 3010)
+             8. Clear all cookies from intentmedia in your Browser's settings
+             9. Go to http://intent-pizza.internal.intentmedia.net:8080/
+             10. Login as b@test.com
+             11. Goto http://intent-pizza.internal.intentmedia.net:8080/pizzas/XXXX where XXXX is whatever you noted in step 7 , for example,
+                 http://intent-pizza.internal.intentmedia.net:8080/pizzas/3010
+             12. It will show you the pizza details 'a-cheese' and 'a-large'.
+             13. This should not be allowed since this order was placed by a@test.com. So, b@test.com should not be able to see this order.
+Priority:    1
+
+
+-------------------- Issue 10 ----------------------------
+Title:       Name Field should be a drop down
+Description: The Pizza Name field should not be a free form entry Input box. It should be a drop down from which User can
+             make a valid selection. Since the list of pizza types is a limited list of what the Pizzeria offers, it makes
+             sense to turn it into a drop down with pre-populated items. This will reduce lots of data entry errors.
+
+             This is not a bug but a feature request.
+
+-------------------- Issue 11 ----------------------------
+Title:       Size Field should be a drop down
+Description: The Pizza size field should not be a free form entry Input box. It should be a drop down from which User can
+             make a valid selection. Since the list of pizza sizes is a limited list of what the Pizzeria offers, it makes
+             sense to turn it into a drop down with pre-populated items. This will reduce lots of data entry errors.
+
+             This is not a bug but a feature request.
+

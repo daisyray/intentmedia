@@ -138,7 +138,13 @@ public class OrderPizzaPageTest {
         assertNotNull(value);
         assertFalse(value.contains("*"));
         assertEquals(value, "abc");
-    }
+
+        nameBox.sendKeys("ABC*****");
+        value = nameBox.getAttribute("value");
+        assertNotNull(value);
+        assertFalse(value.contains("*"));
+        assertEquals(value, "ABC");
+   }
 
     @Test
     public void hasSizeBox() {
@@ -226,5 +232,4 @@ public class OrderPizzaPageTest {
             e.printStackTrace();
         }
     }
-
 }
