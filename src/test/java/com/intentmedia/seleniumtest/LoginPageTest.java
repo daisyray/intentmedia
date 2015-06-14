@@ -85,7 +85,7 @@ public class LoginPageTest extends TestBase {
         assertNotNull(newUserLink);
         String href = newUserLink.getAttribute("href");
         assertNotNull(href);
-        assertEquals(href, "/users/new");
+        assertEquals(href, PIZZA_BASE_URL + "/users/new");
     }
 
     @Test
@@ -94,7 +94,7 @@ public class LoginPageTest extends TestBase {
         WebElement newUserLink = this.wait(By.linkText("Create a new user"));
         assertNotNull(newUserLink);
         newUserLink.click();
-        WebElement h1 = this.wait(By.xpath("//h1[1]"));
+        WebElement h1 = this.wait(By.xpath("/html/body/h1")); // /html/body/h1
         assertEquals(h1.getText(), "Register");
     }
 

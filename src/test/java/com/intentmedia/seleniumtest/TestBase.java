@@ -34,7 +34,7 @@ public class TestBase {
         assertNotNull(logo);
         String logoUrl = logo.getAttribute("src");
         assertNotNull(logoUrl);
-        assertEquals(logoUrl, "/images/intent_pizza_logo.jpg");
+        assertEquals(logoUrl, PIZZA_BASE_URL + "/images/intent_pizza_logo.jpg");
     }
 
     protected WebElement wait(By by) {
