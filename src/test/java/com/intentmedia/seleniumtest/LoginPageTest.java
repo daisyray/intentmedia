@@ -3,6 +3,7 @@ package com.intentmedia.seleniumtest;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.testng.annotations.Test;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.AfterTest;
@@ -12,10 +13,7 @@ import org.testng.annotations.BeforeClass;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
-public class HiringTest {
-    private WebDriver driver;
-    public static final int DEFAULT_WAIT = 10;
-
+public class LoginPageTest extends TestBase {
     @BeforeClass
     public void beforeTest() {
         this.driver = new FirefoxDriver();
@@ -27,8 +25,20 @@ public class HiringTest {
     }
 
     @Test
+    @Override
+    public void hasCorrectTitle() {
+        super.hasCorrectTitle();
+    }
+
+    @Test
+    @Override
+    public void isLogoPresent() {
+        super.isLogoPresent();
+    }
+
+    @Test
     public void emailBoxVisible() {
-        this.driver.get("http://intent-pizza.internal.intentmedia.net:8080");
+        this.driver.get(PIZZA_BASE_URL);
         WebElement email = this.wait(By.id("user_session_email"));
         assertNotNull(email);
         assertTrue(email.isDisplayed());
@@ -45,18 +55,18 @@ public class HiringTest {
     */
     @Test
     public void emailBoxMaxlengthConstrained() {
-        this.driver.get("http://intent-pizza.internal.intentmedia.net:8080");
+        this.driver.get(PIZZA_BASE_URL);
         WebElement email = this.wait(By.id("user_session_email"));
         String longEmail = "aLongEmaiLargedThanThirtyChars@longDomainName.com";
         email.sendKeys(longEmail);
         String inputEmail = email.getAttribute("value");
         assertNotEquals(longEmail, inputEmail);
-        assertTrue(inputEmail.length(), 30);
+        assertEquals(inputEmail.length(), 30);
     }
 
     @Test
     public void passwordBoxVisible() {
-        this.driver.get("http://intent-pizza.internal.intentmedia.net:8080");
+        this.driver.get(PIZZA_BASE_URL);
         WebElement password = this.wait(By.id("user_session_password"));
         assertNotNull(password);
         assertTrue(password.isDisplayed());
@@ -69,46 +79,70 @@ public class HiringTest {
     }
 
     @Test
+    public void createNewUserLinkPresent() {
+        this.driver.get(PIZZA_BASE_URL);
+        WebElement newUserLink = this.wait(By.linkText("Create a new user"));
+        assertNotNull(newUserLink);
+        String href = newUserLink.getAttribute("href");
+        assertNotNull(href);
+        assertEquals(href, "/users/new");
+    }
+
+    @Test
+    public void createNewUserLinkGoesToNewUserPage() {
+        this.driver.get(PIZZA_BASE_URL);
+        WebElement newUserLink = this.wait(By.linkText("Create a new user"));
+        assertNotNull(newUserLink);
+        newUserLink.click();
+        WebElement h1 = this.wait(By.xpath("//h1[1]"));
+        assertEquals(h1.getText(), "Register");
+    }
+
+    @Test
     public void canSubmitUsernamePassword() {
-        this.driver.get("http://intent-pizza.internal.intentmedia.net:8080");
-        WebElement email = this.driver.findElement(By.id("user_session_email"));
-        WebElement password = this.wait(By.id("user_session_password"));
-        String testEmail = "g5223758@trbvm.com";
-        email.sendKeys(testEmail);
-        password.sendKeys("test1234");
-        WebElement loginBtn = this.driver.findElement(By.name("commit"));
-        assertNotNull(loginBtn);
-        loginBtn.click();
+        this.driver.get(PIZZA_BASE_URL);
+        this.login();
         WebElement p = this.wait(By.xpath("//p[1]"));
         String pText = p.getText();
         assertNotNull(pText);
-        assertTrue(pText.contains(testEmail));
+        assertTrue(pText.contains(TEST_EMAIL));
+    }
+
+    @Test
+    public void invalidEmailFails() {
+        this.driver.get(PIZZA_BASE_URL);
+        this.login(TEST_EMAIL+"z", TEST_PASSWORD);
+        this.testLoginErrors("Email is not valid");
     }
 
     @Test
     public void invalidPasswordFails() {
-        this.driver.get("http://intent-pizza.internal.intentmedia.net:8080");
-        WebElement email = this.driver.findElement(By.id("user_session_email"));
-        WebElement password = this.wait(By.id("user_session_password"));
-        String testEmail = "g5223758@trbvm.com";
-        email.sendKeys(testEmail);
-        password.sendKeys("test12345"); 
-        WebElement loginBtn = this.driver.findElement(By.name("commit"));
-        assertNotNull(loginBtn);
-        loginBtn.click();
+        this.driver.get(PIZZA_BASE_URL);
+        this.login(TEST_EMAIL, TEST_PASSWORD+"*");
+        this.testLoginErrors("Password is not valid");
+    }
+    
+    @Test
+    public void emptyEmailFails() {
+        this.driver.get(PIZZA_BASE_URL);
+        this.login("","X");
+        this.testLoginErrors("Email cannot be blank");
+    }
+
+    @Test
+    public void emptyPasswordFails() {
+        this.driver.get(PIZZA_BASE_URL);
+        this.login("X","");
+        this.testLoginErrors("Password cannot be blank");
+    }
+
+    private void testLoginErrors(String msg) {
         WebElement error = this.wait(By.id("error_explanation"));
         assertNotNull(error);
         WebElement li = error.findElement(By.xpath("ul/li[1]"));
         assertNotNull(li);
         String errorMsg = li.getText();
         assertNotNull(errorMsg);
-        assert
-    }
-    
-    
-    private WebElement wait(By by) {
-        WebDriverWait wait = new WebDriverWait(driver, DEFAULT_WAIT);
-        wait.until(ExpectedConditions.presenceOfElementLocated(by));
-        return this.driver.findElement(by);
+        assertTrue(errorMsg.contains(msg));
     }
 }
