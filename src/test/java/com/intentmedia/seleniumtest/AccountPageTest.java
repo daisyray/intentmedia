@@ -5,6 +5,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import java.util.List;
@@ -18,11 +19,17 @@ public class AccountPageTest extends TestBase {
     public void beforeClass() {
         this.driver = new FirefoxDriver();
         this.login();
+        this.wait(By.xpath("//p[1]"));
     }
 
     @AfterClass
-    public void afterTest() {
+    public void afterClass() {
         this.driver.close();
+    }
+
+    @BeforeMethod
+    public void beforeMethod() {
+        this.driver.get(PIZZA_BASE_URL+"/account");
     }
 
     @Test
@@ -39,7 +46,7 @@ public class AccountPageTest extends TestBase {
 
     @Test
     public void canGotoAccountPageAfterLogin() {
-        WebElement p = this.wait(By.xpath("//p[1]"));
+        WebElement p = this.driver.findElement(By.xpath("//p[1]"));
         assertNotNull(p);
         String text = p.getText();
         assertNotNull(text);
@@ -52,7 +59,7 @@ public class AccountPageTest extends TestBase {
         assertNotNull(order);
         String href = order.getAttribute("href");
         assertNotNull(href);
-        assertEquals(href, "/pizzas/new");
+        assertEquals(href, PIZZA_BASE_URL + "/pizzas/new");
     }
 
     @Test
@@ -61,7 +68,7 @@ public class AccountPageTest extends TestBase {
         assertNotNull(order);
         String href = order.getAttribute("href");
         assertNotNull(href);
-        assertEquals(href, "/pizzas");
+        assertEquals(href, PIZZA_BASE_URL + "/pizzas");
     }
 
     @Test
@@ -70,7 +77,7 @@ public class AccountPageTest extends TestBase {
         assertNotNull(order);
         String href = order.getAttribute("href");
         assertNotNull(href);
-        assertEquals(href, "/account/edit");
+        assertEquals(href, PIZZA_BASE_URL + "/account/edit");
     }
 
     @Test
