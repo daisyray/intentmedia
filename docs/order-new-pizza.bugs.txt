@@ -113,8 +113,17 @@ Steps:       1. Create two new users (with emails a@test.com and b@test.com)
              13. This should not be allowed since this order was placed by a@test.com. So, b@test.com should not be able to see this order.
 Priority:    1
 
-
 -------------------- Issue 10 ----------------------------
+Title:       Name Field should have focus upon entering the page
+Description: When we goto http://intent-pizza.internal.intentmedia.net:8080/pizzas/new, the Name input box should have focus
+Steps:       1. Login into http://intent-pizza.internal.intentmedia.net:8080/
+             2. Goto http://intent-pizza.internal.intentmedia.net:8080/pizzas/new
+             3. Note that neither input box has keyboard focus. You'd either need to click into an input box or hit tab
+                to get focus
+             4. Desired behavior is to have Name input box the focus when user goes to this screen
+Priority:    4
+
+-------------------- Issue 11 ----------------------------
 Title:       Name Field should be a drop down
 Description: The Pizza Name field should not be a free form entry Input box. It should be a drop down from which User can
              make a valid selection. Since the list of pizza types is a limited list of what the Pizzeria offers, it makes
@@ -122,7 +131,7 @@ Description: The Pizza Name field should not be a free form entry Input box. It 
 
              This is not a bug but a feature request.
 
--------------------- Issue 11 ----------------------------
+-------------------- Issue 12 ----------------------------
 Title:       Size Field should be a drop down
 Description: The Pizza size field should not be a free form entry Input box. It should be a drop down from which User can
              make a valid selection. Since the list of pizza sizes is a limited list of what the Pizzeria offers, it makes
