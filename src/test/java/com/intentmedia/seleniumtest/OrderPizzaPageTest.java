@@ -7,9 +7,7 @@ import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import static org.testng.AssertJUnit.assertEquals;
-import static org.testng.AssertJUnit.assertNotNull;
-import static org.testng.AssertJUnit.assertTrue;
+import static org.testng.AssertJUnit.*;
 
 public class OrderPizzaPageTest extends TestBase {
     @BeforeClass
@@ -17,6 +15,7 @@ public class OrderPizzaPageTest extends TestBase {
         this.driver = new FirefoxDriver();
         this.login();
         this.sleep();
+        this.driver.get(PIZZA_BASE_URL+"/pizzas/new");
     }
 
     @AfterClass
@@ -77,7 +76,7 @@ public class OrderPizzaPageTest extends TestBase {
 
     @Test
     public void sizeIsMandatory() {
-        WebElement nameBox = this.driver.findElement(By.id("pizza_name"));
+        WebElement nameBox = this.driver.findElement(By.id("pizza_size"));
         nameBox.sendKeys("cheese");
         WebElement commit = this.driver.findElement(By.name("commit"));
         commit.click();
@@ -86,6 +85,26 @@ public class OrderPizzaPageTest extends TestBase {
         assertEquals(error.getText(), "size can not be empty");
         this.sleep();
         assertEquals(this.driver.getCurrentUrl(), PIZZA_BASE_URL + "/pizzas/new");
+    }
+
+    @Test
+    public void nameAcceptsOnlyAlpha() {
+        WebElement nameBox = this.driver.findElement(By.id("pizza_name"));
+        nameBox.sendKeys("abc*****");
+        String value = nameBox.getAttribute("value");
+        assertNotNull(value);
+        assertFalse(value.contains("*"));
+        assertEquals(value, "abc");
+    }
+
+    @Test
+    public void sizeAcceptsAlphaNumeric() {
+        WebElement nameBox = this.driver.findElement(By.id("pizza_size"));
+        nameBox.sendKeys("abc123*");
+        String value = nameBox.getAttribute("value");
+        assertNotNull(value);
+        assertFalse(value.contains("*"));
+        assertEquals(value, "abc123");
     }
 
     @Test
@@ -98,4 +117,6 @@ public class OrderPizzaPageTest extends TestBase {
         commit.click();
         this.wait(By.linkText("Add toppings"));
     }
+
+
 }
