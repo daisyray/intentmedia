@@ -1,6 +1,7 @@
 package com.intentmedia.seleniumtest;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.testng.annotations.AfterClass;
@@ -14,28 +15,31 @@ import static org.testng.AssertJUnit.assertEquals;
 import static org.testng.AssertJUnit.assertNotNull;
 import static org.testng.AssertJUnit.assertTrue;
 
-public class SeeOrderPageTest extends TestBase {
+public class SeeOrderPageTest {
     private String orderId;
+    private TestUtils utils;
+    private WebDriver driver;
 
     @BeforeClass
     public void beforeClass() {
+        this.utils = new TestUtils();
         this.driver = new FirefoxDriver();
-        this.login();
-        this.sleep();
-        this.driver.get(PIZZA_BASE_URL + "/pizzas/new");
-        WebElement name = this.wait(By.id("pizza_name"));
+        this.utils.login(this.driver);
+        this.utils.sleep();
+        this.driver.get(TestUtils.PIZZA_BASE_URL + "/pizzas/new");
+        WebElement name = this.utils.waitForElement(driver, By.id("pizza_name"));
         WebElement size = this.driver.findElement(By.id("pizza_size"));
         name.sendKeys("cheese-test");
         size.sendKeys("large-large");
         this.driver.findElement(By.name("commit")).click();
-        this.wait(By.linkText("Add toppings"));
+        this.utils.waitForElement(driver, By.linkText("Add toppings"));
         String[] parts = this.driver.getCurrentUrl().split("/");
         this.orderId = parts[parts.length-1];
     }
 
     @BeforeMethod
     public void beforeMethod() {
-        this.driver.get(PIZZA_BASE_URL+"/pizzas/"+this.orderId);
+        this.driver.get(TestUtils.PIZZA_BASE_URL+"/pizzas/"+this.orderId);
     }
 
     @AfterClass
@@ -62,7 +66,7 @@ public class SeeOrderPageTest extends TestBase {
         WebElement orderLink = this.driver.findElement(By.linkText("Order this pizza"));
         assertNotNull(orderLink);
         String href = orderLink.getAttribute("href");
-        assertEquals(href, PIZZA_BASE_URL + "/pizzas/" + this.orderId + "/order");
+        assertEquals(href, TestUtils.PIZZA_BASE_URL + "/pizzas/" + this.orderId + "/order");
     }
 
     @Test
@@ -70,7 +74,7 @@ public class SeeOrderPageTest extends TestBase {
         WebElement orderLink = this.driver.findElement(By.linkText("Add toppings"));
         assertNotNull(orderLink);
         String href = orderLink.getAttribute("href");
-        assertEquals(href, PIZZA_BASE_URL + "/pizzas/" + this.orderId + "/toppings/new");
+        assertEquals(href, TestUtils.PIZZA_BASE_URL + "/pizzas/" + this.orderId + "/toppings/new");
     }
 
     @Test
@@ -78,6 +82,6 @@ public class SeeOrderPageTest extends TestBase {
         WebElement orderLink = this.driver.findElement(By.linkText("All orders"));
         assertNotNull(orderLink);
         String href = orderLink.getAttribute("href");
-        assertEquals(href, PIZZA_BASE_URL + "/pizzas");
+        assertEquals(href, TestUtils.PIZZA_BASE_URL + "/pizzas");
     }
 }

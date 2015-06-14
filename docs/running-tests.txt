@@ -1,0 +1,15 @@
+To Run tests, please follow these steps:
+1. Make sure firefox is installed and it's available in your PATH
+2. Make sure JDK 7.0 is installed and it's available in your PATH. Entering 'java -version' should
+   bring back a response
+3. Make sure apache maven (>= 3.0) is installed and it's available in your PATH. Entering 'mvn -version'
+   at the command prompt should show it's version
+4. goto the command prompt and cd to the directory where this zip was unzipped. You should see
+   following files/directories:
+     - src
+     - pom.xml
+     - docs
+5. From this directory, run:
+     mvn clean install
+6. This will run all tests and generate test outputs in target/surefire-reports directory
+7. To see results, open target/surefire-reports/index.html in your browser.

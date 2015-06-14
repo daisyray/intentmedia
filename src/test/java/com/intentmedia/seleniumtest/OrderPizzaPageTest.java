@@ -4,8 +4,6 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
@@ -15,20 +13,18 @@ import java.util.List;
 
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
-import static org.testng.AssertJUnit.*;
+import static org.testng.AssertJUnit.assertFalse;
+import static org.testng.AssertJUnit.assertTrue;
 
 public class OrderPizzaPageTest {
-    public static final String PIZZA_BASE_URL = "http://intent-pizza.internal.intentmedia.net:8080";
-    private static final long FIVE_SECS = 5 * 1000;
-    protected WebDriver driver;
-    public static final int DEFAULT_WAIT = 10;
-    public static final String TEST_EMAIL = "g5223758@trbvm.com";
-    public static final String TEST_PASSWORD = "test1234";
+    private TestUtils utils;
+    private WebDriver driver;
 
     @BeforeClass
     public void beforeClass() {
         this.driver = new FirefoxDriver();
-        this.login();
+        this.utils = new TestUtils();
+        this.utils.login(driver);
     }
 
     @AfterClass
@@ -38,12 +34,12 @@ public class OrderPizzaPageTest {
 
     @BeforeMethod
     public void beforeMethod() {
-        this.driver.get(PIZZA_BASE_URL + "/pizzas/new");
+        this.driver.get(TestUtils.PIZZA_BASE_URL + "/pizzas/new");
     }
 
     @Test
     public void hasCorrectTitle() {
-        this.driver.get(PIZZA_BASE_URL);
+        this.driver.get(TestUtils.PIZZA_BASE_URL);
         String title = this.driver.getTitle();
         assertNotNull(title);
         assertEquals(title, "Intent Pizza");
@@ -51,12 +47,12 @@ public class OrderPizzaPageTest {
 
     @Test
     public void isLogoPresent() {
-        this.driver.get(PIZZA_BASE_URL);
-        WebElement logo = this.wait(By.xpath("//img[1]"));
+        this.driver.get(TestUtils.PIZZA_BASE_URL);
+        WebElement logo = this.utils.waitForElement(driver, By.xpath("//img[1]"));
         assertNotNull(logo);
         String logoUrl = logo.getAttribute("src");
         assertNotNull(logoUrl);
-        assertEquals(logoUrl, PIZZA_BASE_URL + "/images/intent_pizza_logo.jpg");
+        assertEquals(logoUrl, TestUtils.PIZZA_BASE_URL + "/images/intent_pizza_logo.jpg");
     }
 
     @Test
@@ -67,7 +63,7 @@ public class OrderPizzaPageTest {
         assertEquals(method, "post");
         String action = form.getAttribute("action");
         assertNotNull(action);
-        assertEquals(action, "/pizzas");
+        assertEquals(action, TestUtils.PIZZA_BASE_URL + "/pizzas");
     }
 
     @Test
@@ -123,11 +119,10 @@ public class OrderPizzaPageTest {
         sizeBox.sendKeys("large");
         WebElement commit = this.driver.findElement(By.name("commit"));
         commit.click();
-        WebElement error = this.wait(By.id("error_explanation"));
+        WebElement error = utils.waitForElement(driver, By.id("error_explanation"));
         assertNotNull(error);
         assertEquals(error.getText(), "name can not be empty");
-        this.sleep();
-        assertEquals(this.driver.getCurrentUrl(), PIZZA_BASE_URL + "/pizzas/new");
+        assertEquals(this.driver.getCurrentUrl(), TestUtils.PIZZA_BASE_URL + "/pizzas/new");
     }
 
     @Test
@@ -161,11 +156,10 @@ public class OrderPizzaPageTest {
         nameBox.sendKeys("cheese");
         WebElement commit = this.driver.findElement(By.name("commit"));
         commit.click();
-        WebElement error = this.wait(By.id("error_explanation"));
+        WebElement error = utils.waitForElement(driver, By.id("error_explanation"));
         assertNotNull(error);
         assertEquals(error.getText(), "size can not be empty");
-        this.sleep();
-        assertEquals(this.driver.getCurrentUrl(), PIZZA_BASE_URL + "/pizzas/new");
+        assertEquals(this.driver.getCurrentUrl(), TestUtils.PIZZA_BASE_URL + "/pizzas/new");
     }
 
     @Test
@@ -196,7 +190,7 @@ public class OrderPizzaPageTest {
         sizeBox.sendKeys("large");
         WebElement commit = this.driver.findElement(By.name("commit"));
         commit.click();
-        this.wait(By.linkText("Add toppings"));
+        utils.waitForElement(driver, By.linkText("Add toppings"));
 
         // Did we goto next page?
         List<WebElement> ps = this.driver.findElements(By.tagName("p"));
@@ -207,29 +201,11 @@ public class OrderPizzaPageTest {
         assertTrue(name.getText().contains("cheese"));
     }
 
-    protected void login() {
-        this.driver.get(PIZZA_BASE_URL);
-        WebElement email = this.driver.findElement(By.id("user_session_email"));
-        WebElement password = this.wait(By.id("user_session_password"));
-        email.sendKeys(TEST_EMAIL   );
-        password.sendKeys(TEST_PASSWORD);
-        WebElement loginBtn = this.driver.findElement(By.name("commit"));
-        assertNotNull(loginBtn);
-        loginBtn.click();
-    }
-
-    protected WebElement wait(By by) {
-        WebDriverWait wait = new WebDriverWait(driver, DEFAULT_WAIT);
-        wait.until(ExpectedConditions.presenceOfElementLocated(by));
-        return this.driver.findElement(by);
-    }
-
-    protected void sleep() {
-        try {
-            Thread.sleep(FIVE_SECS);
-            this.driver.get(PIZZA_BASE_URL+"/pizzas/new");
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+    @Test
+    public void gotoNewPizzaPageWithoutLoginShouldBeRedirected() {
+        this.driver.get(TestUtils.PIZZA_BASE_URL + "/pizzas/new");
+        String url = this.driver.getCurrentUrl();
+        assertNotNull(url);
+        assertEquals(url, TestUtils.PIZZA_BASE_URL);
     }
 }
